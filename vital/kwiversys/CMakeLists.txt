@@ -832,7 +832,7 @@ FOREACH(h ${KWSYS_HXX_FILES})
   # Configure the header into the given directory.
   CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/${h}.hxx.in ${KWSYS_HEADER_DIR}/${h}.hxx
                  @ONLY IMMEDIATE)
-  SET(KWSYS_CXX_SRCS ${KWSYS_CXX_SRCS} ${KWSYS_HEADER_DIR}/${h}.hxx)
+  SET(KWSYS_CXX_SRCS ${KWSYS_CXX_SRCS} ${KWSYS_HEADER_DIR}/${h}.hxx ../io/tests/test_track_set_io.cxx)
 
   # Create an install target for the header.
   IF(KWSYS_INSTALL_INCLUDE_DIR)
