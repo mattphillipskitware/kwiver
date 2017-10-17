@@ -6,15 +6,11 @@
 
 #include <arrows/core/read_object_track_set_kw18.h>
 #include <arrows/core/write_object_track_set_kw18.h>
-//#include <vital/algo/read_object_track_set.h>
-//#include <vital/algo/write_object_track_set.h>
-
-//#include <arrows/core/track_set_impl.h>
-//#include <vital/io/track_set_io.h>
 
 #include <tests/test_common.h>
 #include <tests/test_tracks.h>
 #include <vital/tests/test_track_set.h>
+#include <arrows/core/tests/test_track_set_impl.h>
 
 #include <boost/filesystem.hpp>
 
@@ -24,6 +20,7 @@
 namespace fs = boost::filesystem;
 namespace kv = kwiver::vital;
 namespace kac = kwiver::arrows::core;
+namespace kat = kwiver::arrows::testing;
 using track_sptr = kv::track_sptr;
 
 // There is no object_track_set_kw18.h ...
@@ -89,69 +86,18 @@ static kv::object_track_set_sptr track_set_adapter(
   return ots;
 }
 
-// These tests largely copy/pasted from
+// These tests largely copy/pasted from kwiver::vital::object_track_set
 // kwiver/arrows/core/tests/test_track_set_impl.cxx
 static void run_io_consistency_tests(
         const kv::object_track_set_sptr ts_write_out,
         const kv::object_track_set_sptr ts_read_in)
 {
-  TEST_EQUAL ("frame_index size() matches simple",
-              ts_read_in->size(), ts_write_out->size() );
-  TEST_EQUAL("frame_index empty() matches simple",
-             ts_read_in->empty(), ts_write_out->empty());
-  TEST_EQUAL("frame_index first_frame() matches simple",
-             ts_read_in->first_frame(), ts_write_out->first_frame());
-  TEST_EQUAL("frame_index last_frame() matches simple",
-             ts_read_in->last_frame(), ts_write_out->last_frame());
-
-  auto all_frames_s = ts_read_in->all_frame_ids();
-  auto all_frames_f = ts_write_out->all_frame_ids();
-  TEST_EQUAL("frame_index all_frame_ids() matches simple",
-             std::equal(all_frames_s.begin(), all_frames_s.end(),
-                        all_frames_f.begin()), true);
-
-  auto all_tid_s = ts_read_in->all_track_ids();
-  auto all_tid_f = ts_write_out->all_track_ids();
-  TEST_EQUAL("frame_index all_track_ids() matches simple",
-             std::equal(all_tid_s.begin(), all_tid_s.end(),
-                        all_tid_f.begin()), true);
-
-  auto active_s = ts_read_in->active_tracks(5);
-  auto active_f = ts_write_out->active_tracks(5);
-  std::sort(active_s.begin(), active_s.end());
-  std::sort(active_f.begin(), active_f.end());
-  TEST_EQUAL("frame_index active_tracks() matches simple",
-             std::equal(active_s.begin(), active_s.end(),
-                        active_f.begin()), true);
-
-  auto inactive_s = ts_read_in->inactive_tracks(15);
-  auto inactive_f = ts_write_out->inactive_tracks(15);
-  std::sort(inactive_s.begin(), inactive_s.end());
-  std::sort(inactive_f.begin(), inactive_f.end());
-  TEST_EQUAL("frame_index inactive_tracks() matches simple",
-             std::equal(inactive_s.begin(), inactive_s.end(),
-                        inactive_f.begin()), true);
-
-  auto new_s = ts_read_in->new_tracks(40);
-  auto new_f = ts_write_out->new_tracks(40);
-  std::sort(new_s.begin(), new_s.end());
-  std::sort(new_f.begin(), new_f.end());
-  TEST_EQUAL("frame_index new_tracks() matches simple",
-             std::equal(new_s.begin(), new_s.end(),
-                        new_f.begin()), true);
-
-  auto term_s = ts_read_in->terminated_tracks(60);
-  auto term_f = ts_write_out->terminated_tracks(60);
-  std::sort(term_s.begin(), term_s.end());
-  std::sort(term_f.begin(), term_f.end());
-  TEST_EQUAL("frame_index terminated_tracks() matches simple",
-             std::equal(term_s.begin(), term_s.end(),
-                        term_f.begin()), true);
-
-  TEST_EQUAL("frame_index percentage_tracked() matches simple",
-             ts_read_in->percentage_tracked(10, 50),
-             ts_write_out->percentage_tracked(10, 50));
+  kat::test_index_matches_simple(ts_write_out, ts_read_in);
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 DECLARE_TEST_MAP();
 
@@ -180,9 +126,8 @@ IMPLEMENT_TEST(read_write_simple_kw18)
   const fs::path track_set_path{ g_temp_dir / "track_test_simple.kw18" };
   const std::string track_set_fn{ track_set_path.string() };
 
-  auto ts = kv::testing::make_simple_track_set();
   kv::object_track_set_sptr ts_write_out
-          = track_set_adapter( ts );
+          = track_set_adapter( kv::testing::make_simple_track_set() );
 
   write_set_helper(track_set_fn, ts_write_out);
   std::cout << "object track set written out, "
@@ -203,10 +148,9 @@ IMPLEMENT_TEST(read_write_kw18)
   const fs::path track_set_path{ g_temp_dir / "track_test.kw18" };
   const std::string track_set_fn{ track_set_path.string() };
 
-  auto ts = kwiver::testing::generate_tracks();
-  std::cout << ts->size() << " tracks generated." << std::endl;
+  std::cout << "Generating tracks, this takes a while ..." << std::endl;
   kv::object_track_set_sptr ts_write_out
-          = track_set_adapter( ts );
+          = track_set_adapter( kwiver::testing::generate_tracks() );
   std::cout << ts_write_out->size() << " tracks generated." << std::endl;
 
   write_set_helper(track_set_fn, ts_write_out);
@@ -219,6 +163,8 @@ IMPLEMENT_TEST(read_write_kw18)
   const bool read_ok = rots.read_set(ts_read_in);
   TEST_EQUAL("File read ok", read_ok, true);
   rots.close();
+  std::cout << "object track set read back in, "
+               + std::to_string(ts_write_out->size()) + " tracks." << std::endl;
 
   run_io_consistency_tests(ts_write_out, ts_read_in);
 }

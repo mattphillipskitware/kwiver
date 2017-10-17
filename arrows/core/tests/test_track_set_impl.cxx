@@ -28,14 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <test_common.h>
 
-#include <algorithm>
-#include <iostream>
-
-#include <arrows/core/track_set_impl.h>
-#include <test_tracks.h>
-#include <vital/tests/test_track_set.h>
+#include "test_track_set_impl.h"
 
 #define TEST_ARGS ()
 
@@ -88,6 +82,7 @@ IMPLEMENT_TEST(frame_index_matches_simple)
 {
   using namespace kwiver::vital;
   using kwiver::arrows::core::frame_index_track_set_impl;
+  using namespace kwiver::arrows::testing;
 
   auto tracks = kwiver::testing::generate_tracks();
 
@@ -95,60 +90,5 @@ IMPLEMENT_TEST(frame_index_matches_simple)
   auto ftracks = std::make_shared<track_set>(
                    tsi_uptr(new frame_index_track_set_impl(tracks->tracks()) ) );
 
-  TEST_EQUAL("frame_index size() matches simple",
-             tracks->size(), ftracks->size());
-  TEST_EQUAL("frame_index empty() matches simple",
-             tracks->empty(), ftracks->empty());
-  TEST_EQUAL("frame_index first_frame() matches simple",
-             tracks->first_frame(), ftracks->first_frame());
-  TEST_EQUAL("frame_index last_frame() matches simple",
-             tracks->last_frame(), ftracks->last_frame());
-
-  auto all_frames_s = tracks->all_frame_ids();
-  auto all_frames_f = ftracks->all_frame_ids();
-  TEST_EQUAL("frame_index all_frame_ids() matches simple",
-             std::equal(all_frames_s.begin(), all_frames_s.end(),
-                        all_frames_f.begin()), true);
-
-  auto all_tid_s = tracks->all_track_ids();
-  auto all_tid_f = ftracks->all_track_ids();
-  TEST_EQUAL("frame_index all_track_ids() matches simple",
-             std::equal(all_tid_s.begin(), all_tid_s.end(),
-                        all_tid_f.begin()), true);
-
-  auto active_s = tracks->active_tracks(5);
-  auto active_f = ftracks->active_tracks(5);
-  std::sort(active_s.begin(), active_s.end());
-  std::sort(active_f.begin(), active_f.end());
-  TEST_EQUAL("frame_index active_tracks() matches simple",
-             std::equal(active_s.begin(), active_s.end(),
-                        active_f.begin()), true);
-
-  auto inactive_s = tracks->inactive_tracks(15);
-  auto inactive_f = ftracks->inactive_tracks(15);
-  std::sort(inactive_s.begin(), inactive_s.end());
-  std::sort(inactive_f.begin(), inactive_f.end());
-  TEST_EQUAL("frame_index inactive_tracks() matches simple",
-             std::equal(inactive_s.begin(), inactive_s.end(),
-                        inactive_f.begin()), true);
-
-  auto new_s = tracks->new_tracks(40);
-  auto new_f = ftracks->new_tracks(40);
-  std::sort(new_s.begin(), new_s.end());
-  std::sort(new_f.begin(), new_f.end());
-  TEST_EQUAL("frame_index new_tracks() matches simple",
-             std::equal(new_s.begin(), new_s.end(),
-                        new_f.begin()), true);
-
-  auto term_s = tracks->terminated_tracks(60);
-  auto term_f = ftracks->terminated_tracks(60);
-  std::sort(term_s.begin(), term_s.end());
-  std::sort(term_f.begin(), term_f.end());
-  TEST_EQUAL("frame_index terminated_tracks() matches simple",
-             std::equal(term_s.begin(), term_s.end(),
-                        term_f.begin()), true);
-
-  TEST_EQUAL("frame_index percentage_tracked() matches simple",
-             tracks->percentage_tracked(10, 50),
-             ftracks->percentage_tracked(10, 50));
+  test_index_matches_simple(tracks, ftracks);
 }
