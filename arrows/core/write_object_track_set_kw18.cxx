@@ -107,6 +107,7 @@ write_object_track_set_kw18
       vital::detected_object_sptr det = ts->detection;
       const vital::bounding_box_d empty_box = vital::bounding_box_d( -1, -1, -1, -1 );
       vital::bounding_box_d bbox = ( det ? det->bounding_box() : empty_box );
+      const auto confidence = det ? det->confidence() : 0;
 
       stream() << trk_ptr->id() << " "     // 1: track id
                << trk_ptr->size() << " "   // 2: track length
@@ -126,7 +127,7 @@ write_object_track_set_kw18
                << "0 "                     // 16: world-loc y
                << "0 "                     // 17: world-loc z
                << ts->frame() << " "       // 18: timestamp
-               << det->confidence()        // 19: confidence
+               << confidence               // 19: confidence
                << std::endl;
     }
   }
