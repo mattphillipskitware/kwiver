@@ -5,13 +5,12 @@
 #ifndef KWIVER_TEST_TRACK_SET_IMPL_H
 #define KWIVER_TEST_TRACK_SET_IMPL_H
 
-#include <test_common.h>
+#include <tests/test_common.h>
 
 #include <algorithm>
 #include <iostream>
 
 #include <arrows/core/track_set_impl.h>
-#include <test_tracks.h>
 #include <vital/tests/test_track_set.h>
 
 namespace kwiver {
