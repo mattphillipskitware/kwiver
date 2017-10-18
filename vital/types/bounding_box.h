@@ -191,10 +191,10 @@ private:
 template <typename T>
 bool operator== ( bounding_box<T> const& lhs, bounding_box<T> const& rhs )
 {
-  if ( ( lhs == &rhs ) ||
-       ( lhs->upper_left() == rhs.upper_left()  &&
-         lhs->lower_right() == rhs.lower_right() )
-    )
+  if ( ( &lhs == &rhs ) ||
+       ( lhs.upper_left() == rhs.upper_left()  &&
+         lhs.lower_right() == rhs.lower_right() )
+          )
   {
     return true;
   }
@@ -202,6 +202,37 @@ bool operator== ( bounding_box<T> const& lhs, bounding_box<T> const& rhs )
   return false;
 }
 
+
+/**
+ * @brief Inequality operator for bounding box
+ *
+ * @param[in] lhs The left hand side box
+ * @param[in] rhs The right hand side box
+ *
+ * @return true if boxes are not identical
+ */
+template <typename T>
+bool operator!= ( bounding_box<T> const& lhs, bounding_box<T> const& rhs )
+{
+  return !(lhs == rhs);
+}
+
+
+/**
+ * @brief Stream operator for bounding box
+ *
+ * @param[in, out] out The ostream to write to
+ * @param[in[ bb The bounding box to write
+ *
+ * @return The ostream that has been written to.
+ */
+template<typename T>
+std::ostream& operator<<(std::ostream& out, const bounding_box<T>& bb)
+{
+  out << "((" << bb.upper_left().x() << ", " << bb.upper_left().y() << "), ("
+      << bb.lower_right().x() << ", " << bb.lower_right().y() << "))";
+  return out;
+}
 
 // Define for common types.
 typedef bounding_box< int > bounding_box_i;
