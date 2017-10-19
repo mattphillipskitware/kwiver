@@ -73,7 +73,16 @@ IMPLEMENT_TEST(read_write_simple_kw18)
 
   kat::test_index_matches_simple(tset_out, tset_in);
 }
+/*
+IMPLEMENT_TEST(read_write_tracks)
+{
+  const fs::path track_set_path{ kvit::g_temp_dir / "track_test_simple" };
+  const auto tset_out = kv::testing::make_simple_track_set();
+  const auto tset_in = kvit::write_and_read_tracks(track_set_path, tset_out);
 
+  kat::test_index_matches_simple(tset_out, tset_in);
+}
+*/
 IMPLEMENT_TEST(read_write_kw18)
 {
   const fs::path track_set_path{ kvit::g_temp_dir / "track_test.kw18" };

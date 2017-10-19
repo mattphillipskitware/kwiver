@@ -31,6 +31,8 @@
 
 #include "test_track_set_impl.h"
 
+#include <test_tracks.h>
+
 #define TEST_ARGS ()
 
 DECLARE_TEST_MAP();

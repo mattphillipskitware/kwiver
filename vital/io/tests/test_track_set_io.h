@@ -66,7 +66,7 @@ make_simple_detection_tracks()
 {
 
   object_track_set_sptr tset
-          = track_set_adapter( vital::testing::make_simple_track_set() );
+          = track_set_adapter( kwiver::vital::testing::make_simple_track_set() );
   for (size_t i=0, N = tset->size(); i < N; ++i)
   {
     const double d{ (double)i * 0.25 };
@@ -132,6 +132,33 @@ write_and_read_tracks(const fs::path& file_path,
   return tset_read_in;
 }
 
+/*
+track_set_sptr
+write_and_read_tracks(const fs::path& file_path,
+                      const track_set_sptr tset_write_out)
+{
+  const std::string track_set_fn{ file_path.string() };
+
+  std::cout << tset_write_out->size() << " tracks generated." << std::endl;
+
+  kwiver::vital::algo::write_object_track_set wots;
+  wots.open(track_set_fn);
+  wots.write_set(tset_write_out);
+  wots.close();
+  std::cout << "object track set written out, "
+               + std::to_string(tset_write_out->size())
+               + " tracks." << std::endl;
+
+  track_set_sptr tset_read_in;
+  kwiver::vital::algo::read_object_track_set rots;
+  rots.open(track_set_fn);
+  const bool read_ok = rots.read_set(tset_read_in);
+  TEST_EQUAL("File read ok", read_ok, true);
+  rots.close();
+
+  return tset_read_in;
+}
+*/
 
 // This function is necessary because write_object_track_set_kw18 only
 // writes on destruction
