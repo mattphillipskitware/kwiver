@@ -2,7 +2,7 @@ project(arrows_test_core)
 
 include(kwiver-test-setup)
 
-set( test_libraries    kwiver_algo_core vital vital_vpm vital_video_metadata)
+set( test_libraries    boost_filesystem boost_system kwiver_algo_core vital vital_vpm vital_video_metadata)
 
 ##############################
 # Algorithms core plugin tests
@@ -18,3 +18,4 @@ kwiver_discover_tests(core_video_input_image_list       test_libraries test_vide
 kwiver_discover_tests(core_video_input_pos              test_libraries test_video_input_pos.cxx  "${kwiver_test_data_directory}" )
 kwiver_discover_tests(core_video_input_split            test_libraries test_video_input_split.cxx  "${kwiver_test_data_directory}" )
 kwiver_discover_tests(core_video_input_filter           test_libraries test_video_input_filter.cxx  "${kwiver_test_data_directory}" )
+kwiver_discover_tests(core_associate_detections         test_libraries test_associate_detections.cxx "${kwiver_test_data_directory}" )

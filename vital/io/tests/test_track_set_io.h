@@ -7,6 +7,10 @@
 
 #include <boost/filesystem.hpp>
 
+#include <arrows/core/read_object_track_set_kw18.h>
+#include <arrows/core/write_object_track_set_kw18.h>
+#include <vital/tests/test_track_set.h>
+
 namespace kwiver {
 namespace vital {
 namespace io {
