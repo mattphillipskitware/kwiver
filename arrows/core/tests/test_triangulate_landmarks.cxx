@@ -28,10 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "test_triangulate_landmarks.h"
-
 #include <test_scene.h>
 
+#include <arrows/tests/test_triangulate_landmarks.h>
 #include <arrows/core/triangulate_landmarks.h>
 #include <vital/plugin_loader/plugin_manager.h>
 
@@ -39,9 +38,6 @@
 int main(int argc, char** argv)
 {
   ::testing::InitGoogleTest( &argc, argv );
-
-  kwiver::vital::plugin_manager::instance().load_all_plugins();
-
   return RUN_ALL_TESTS();
 }
 
@@ -49,6 +45,9 @@ int main(int argc, char** argv)
 TEST(triangulate_landmarks, create)
 {
   using namespace kwiver::vital;
+
+  plugin_manager::instance().load_all_plugins();
+
   EXPECT_NE(nullptr, algo::triangulate_landmarks::create("core"));
 }
 

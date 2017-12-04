@@ -30,7 +30,7 @@
 
 #include <test_scene.h>
 
-#include <arrows/core/tests/test_triangulate_landmarks.h>
+#include <arrows/tests/test_triangulate_landmarks.h>
 #include <arrows/vxl/triangulate_landmarks.h>
 
 #include <vital/plugin_loader/plugin_manager.h>
@@ -41,15 +41,14 @@ using namespace kwiver::vital;
 int main(int argc, char** argv)
 {
   ::testing::InitGoogleTest( &argc, argv );
-
-  kwiver::vital::plugin_manager::instance().load_all_plugins();
-
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
 TEST(triangulate_landmarks, create)
 {
+  plugin_manager::instance().load_all_plugins();
+
   EXPECT_NE(nullptr, algo::triangulate_landmarks::create("vxl"));
 }
 
