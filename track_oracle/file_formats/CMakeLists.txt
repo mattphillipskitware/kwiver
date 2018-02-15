@@ -6,6 +6,7 @@ set( track_oracle_format_base_public_headers
   file_format_base.h
   file_format_type.h
   file_format_schema.h
+  file_format_manager.h
 )
 
 set( track_oracle_format_base_sources
@@ -22,7 +23,7 @@ kwiver_install_headers(
 
 kwiver_install_headers(
   ${CMAKE_CURRENT_BINARY_DIR}/track_oracle_format_base_export.h
-  NOPATH SUBDIR      track_oracle
+  NOPATH SUBDIR      track_oracle/file_formats
 )
 
 kwiver_add_library( track_oracle_format_base
@@ -60,11 +61,22 @@ add_subdirectory( track_csv )
 add_subdirectory( track_kst )
 add_subdirectory( track_vatic )
 add_subdirectory( track_vpd )
+if( KWIVER_ENABLE_KPF )
+  add_subdirectory( track_kpf_geom )
+  add_subdirectory( kpf_utils )
+  add_subdirectory( track_filter_kpf_activity )
+  set( TRACK_KPF_LIBRARIES track_kpf_geom kpf_utils track_filter_kpf_activity )
+else()
+  set( TRACK_KPF_LIBRARIES "" )
+endif()
+
 if (KWIVER_ENABLE_TRACK_ORACLE_MGRS)
   add_subdirectory( track_scorable_mgrs )
   add_subdirectory( aoi_utils )
 endif()
+
 add_subdirectory( track_e2at_callout )
+
 if (KWIVER_ENABLE_TRACK_ORACLE_EVENT_ADAPTER)
   add_subdirectory( track_filter_kwe)
   set( TRACK_FILTER_KWE_LIBRARY track_filter_kwe )
@@ -86,12 +98,12 @@ set( track_oracle_file_formats_sources
 
 kwiver_install_headers(
   ${track_oracle_file_formats_public_headers}
-  SUBDIR        track_oracle
+  SUBDIR        track_oracle/file_formats
 )
 
 kwiver_install_headers(
   ${CMAKE_CURRENT_BINARY_DIR}/track_oracle_file_formats_export.h
-  SUBDIR        track_oracle
+  SUBDIR        track_oracle/file_formats
   NOPATH
 )
 
@@ -118,7 +130,8 @@ target_link_libraries( track_oracle_file_formats
                        track_oracle_tokenizers
                        ${TRACK_FILTER_KWE_LIBRARY}
                        ${TRACK_ORACLE_APIX_LIBRARY}
-
+                       ${TRACK_KPF_LIBRARIES}
+                       
   PRIVATE              ${Boost_THREAD_LIBRARY}
                        vital
                        vul

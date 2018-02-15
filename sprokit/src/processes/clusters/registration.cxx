@@ -85,7 +85,7 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 
   // Build include directories.
   kwiversys::SystemTools::GetPath( include_dirs, sprokit_include_envvar.c_str() );
-  kwiver::vital::tokenize( default_include_dirs, include_dirs, path_separator, true );
+  kwiver::vital::tokenize( default_include_dirs, include_dirs, path_separator, kwiver::vital::TokenizeTrimEmpty );
 
   for ( const kwiver::vital::path_t& include_dir : include_dirs)
   {
@@ -93,7 +93,7 @@ register_factories( kwiver::vital::plugin_loader& vpm )
     LOG_DEBUG( logger, "Loading clusters from directory: " << include_dir );
     if ( ! kwiversys::SystemTools::FileExists( include_dir) )
     {
-      LOG_WARN( logger, "Path not found loading clusters: " << include_dir );
+      LOG_DEBUG( logger, "Path not found loading clusters: " << include_dir );
       continue;
     }
 

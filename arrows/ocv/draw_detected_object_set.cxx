@@ -37,6 +37,8 @@
 
 #include <vital/vital_types.h>
 #include <vital/util/tokenize.h>
+#include <vital/util/string.h>
+#include <vital/config/config_difference.h>
 
 #include <kwiversys/RegularExpression.hxx>
 #include <arrows/ocv/image_container.h>
@@ -74,9 +76,9 @@ public:
     , m_draw_text( true )
   {
     m_default_params.thickness = 1.0;
-    m_default_params.color[0] = 0;
+    m_default_params.color[0] = 255;
     m_default_params.color[1] = 0;
-    m_default_params.color[2] = 255;
+    m_default_params.color[2] = 0;
   }
 
   ~priv()
@@ -218,7 +220,7 @@ public:
   vital::image_container_sptr draw_detections( vital::image_container_sptr      image_data,
                                                vital::detected_object_set_sptr  in_set ) const
   {
-    cv::Mat image = image_container_to_ocv_matrix( *image_data ).clone();
+    cv::Mat image = image_container_to_ocv_matrix( *image_data, arrows::ocv::image_container::BGR ).clone();
 
     // process the detection set
     auto ie =  in_set->cend();
@@ -259,7 +261,7 @@ public:
       }
     } // end foreach
 
-    return vital::image_container_sptr( new arrows::ocv::image_container( image ) );
+    return vital::image_container_sptr( new arrows::ocv::image_container( image, arrows::ocv::image_container::BGR ) );
   } // end draw_detections
 
 
@@ -291,7 +293,7 @@ process_config()
   // e.g. person/3.5/0 0 255;
   {
     std::vector< std::string > cspec;
-    kwiver::vital::tokenize( m_tmp_custom, cspec, ";", true );
+    kwiver::vital::tokenize( m_tmp_custom, cspec, ";", kwiver::vital::TokenizeTrimEmpty );
 
     for( auto cs : cspec )
     {
@@ -348,7 +350,7 @@ process_config()
   } // end local scope
 
   // Parse selected class_names
-  kwiver::vital::tokenize( m_tmp_class_select, m_select_classes, ";", true );
+  kwiver::vital::tokenize( m_tmp_class_select, m_select_classes, ";", kwiver::vital::TokenizeTrimEmpty );
 }
 
 }; // end priv class
@@ -412,6 +414,15 @@ set_configuration(vital::config_block_sptr config_in)
   // Starting with our generated config_block to ensure that assumed values are present
   // An alternative is to check for key presence before performing a get_value() call.
   vital::config_block_sptr config = this->get_configuration();
+
+  kwiver::vital::config_difference cd( config, config_in );
+  const auto key_list = cd.extra_keys();
+  if ( ! key_list.empty() )
+  {
+    // This may be considered an error in some cases
+    LOG_WARN( logger(), "Additional parameters found in config block that are not required or desired: "
+              << kwiver::vital::join( key_list, ", " ) );
+  }
 
   config->merge_config( config_in );
 

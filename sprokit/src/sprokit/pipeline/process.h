@@ -47,7 +47,6 @@
 #pragma warning (disable : 4267)
 #endif
 
-#include <boost/cstdint.hpp>
 #include <boost/rational.hpp>
 #ifdef WIN32
 #pragma warning (pop)
@@ -1385,6 +1384,7 @@ SCOPED_INSTRUMENTATION(reconfigure);
     SPROKIT_PIPELINE_NO_EXPORT void add_property ( const property_t& prop );
 };
 
+
 // ----------------------------------------------------------------------------
 template <typename T>
 T
@@ -1394,6 +1394,8 @@ process
   return kwiver::vital::config_block_get_value_cast<T>(config_value_raw(key));
 }
 
+
+// ----------------------------------------------------------------------------
 template <typename T>
 T
 process
@@ -1402,6 +1404,8 @@ process
   return grab_datum_from_port(port)->get_datum<T>();
 }
 
+
+// ----------------------------------------------------------------------------
 template <typename T>
 T
 process
@@ -1415,6 +1419,8 @@ process
   return grab_from_port_as<T>(port);
 }
 
+
+// ----------------------------------------------------------------------------
 template <typename T>
 void
 process
